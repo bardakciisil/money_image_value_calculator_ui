@@ -1,23 +1,23 @@
 class Photo {
+  final int id;
+  final String photoName;
+  final String photoImage;
+
   Photo({
-    this.PhotoId,
-    this.PhotoName,
-    this.PhotoImage,
+    required this.id,
+    required this.photoName,
+    required this.photoImage,
   });
 
-  int? PhotoId;
-  String? PhotoName;
-  String? PhotoImage;
-
   factory Photo.fromJson(Map<String, dynamic> json) => Photo(
-        PhotoId: json["PhotoId"],
-        PhotoName: json["PhotoName"],
-        PhotoImage: json["PhotoImage"],
+        id: json["id"] as int,
+        photoName: json["photoName"] as String,
+        photoImage: json["photoImage"] as String,
       );
 
   Map<String, dynamic> toJson() => {
-        "PhotoId": PhotoId,
-        "PhotoName": PhotoName,
-        "PhotoImage": PhotoImage,
+        "id": id,
+        "photoName": photoName,
+        "photoImage": photoImage,
       };
 }

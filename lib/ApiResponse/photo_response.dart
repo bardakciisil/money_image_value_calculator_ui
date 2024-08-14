@@ -1,4 +1,4 @@
-import 'package:money_img_value_calculator_ui/Models/photo.dart';
+import 'package:money_image_value_calculator_ui/Models/photo.dart';
 import 'mobile_api_response.dart';
 
 class PhotoResponse extends MobileApiResponse {
@@ -11,14 +11,14 @@ class PhotoResponse extends MobileApiResponse {
   });
 
   factory PhotoResponse.fromJson(Map<String, dynamic> json) => PhotoResponse(
-        photo: json["photo"],
-        hasError: json["hasError"],
-        errorMessage: json["message"],
+        photo: Photo.fromJson(json["photo"] as Map<String, dynamic>),
+        hasError: json["hasError"] as bool? ?? false,
+        errorMessage: json["message"] as String? ?? "",
       );
 
   @override
   Map<String, dynamic> toJson() => {
-        "photo": photo,
+        "photo": photo.toJson(),
         "hasError": hasError,
         "message": errorMessage,
       };

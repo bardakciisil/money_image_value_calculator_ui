@@ -7,10 +7,8 @@ import '../ApiResponse/mobile_api_response.dart';
 
 class ApiClient {
   Dio? _dio;
-  final String _baseUrl =
-      "https://192.168.1.9:45455/api/"; // Conveyor Remote URL
+  final String _baseUrl = "https://192.168.1.9:45455/api/";
 
-  // Callbacks
   Function(MobileApiResponse)? onResponseCallback;
   Function(MobileApiResponse)? onErrorCallback;
 
@@ -39,17 +37,11 @@ class ApiClient {
   void initializeInterceptors() {
     _dio!.interceptors.add(InterceptorsWrapper(
       onRequest: (options, requestInterceptorHandler) {
-        // TODO: Add token if needed
-        // String token = LocalSharedPreference.getString(LocalSharedPreference.SHARED_MEM_KEY_DEVICE_TOKEN);
-        // if (token.isNotEmpty) {
-        //   options.headers["Authorization"] = "Bearer $token";
-        // }
         return requestInterceptorHandler.next(options);
       },
       onResponse: (response, responseInterceptorHandler) {
         log('Response: ${response.statusCode}');
-        onResponseCallback
-            ?.call(MobileApiResponse()); // Or, provide more details here
+        onResponseCallback?.call(MobileApiResponse());
         return responseInterceptorHandler.next(response);
       },
       onError: (error, errorInterceptorHandler) {
@@ -101,19 +93,6 @@ class ApiClient {
     }
   }
 
-  Future<Response> postRequestQueryString(
-      String endPoint, dynamic formData) async {
-    try {
-      final queryString = Transformer.urlEncodeMap(formData);
-      final response = await _dio!.post('$endPoint?$queryString');
-      log("POST Query String Response: ${response.toString()}");
-      return response;
-    } catch (e) {
-      log("POST Query String Request Error: $e");
-      rethrow;
-    }
-  }
-
   Future<Response> deleteById(String endPoint) async {
     try {
       final response = await _dio!.delete(endPoint);
@@ -140,15 +119,7 @@ class ApiClient {
     }
   }
 
-  Future<Response> getRequestToken(String endpoint,
-      {Map<String, dynamic>? filter}) async {
-    try {
-      final response = await _dio!.get(endpoint, queryParameters: filter);
-      log("GET Response with Token: ${response.toString()}");
-      return response;
-    } catch (e) {
-      log("GET Request with Token Error: $e");
-      rethrow;
-    }
+  String getUploadUrl(String photoImage) {
+    return '${_baseUrl}Uploads/$photoImage';
   }
 }

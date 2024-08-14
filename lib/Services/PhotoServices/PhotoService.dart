@@ -1,58 +1,72 @@
-import 'package:money_img_value_calculator_ui/ApiResponse/mobile_api_response.dart';
-import 'package:money_img_value_calculator_ui/ApiResponse/photo_list_response.dart';
-import 'package:money_img_value_calculator_ui/ApiResponse/photo_response.dart';
-import '/ApiResponse/update_photo_response.dart';
+import '../../ApiResponse/mobile_api_response.dart';
+import '../../ApiResponse/photo_list_response.dart';
+import '../../ApiResponse/photo_response.dart';
 import '../api_client.dart';
 
-import 'package:money_img_value_calculator_ui/Services/PhotoServices/IPhotoService.dart';
+import 'IPhotoService.dart';
 
 class PhotoService implements IPhotoService {
-  ApiClient? _apiClient;
-  PhotoService(ApiClient apiClient) {
-    _apiClient = apiClient;
-    _apiClient!.onResponseCallback = onResponseCallback;
-    _apiClient!.onErrorCallback = onErrorCallback;
+  final ApiClient _apiClient;
+
+  PhotoService(this._apiClient) {
+    _apiClient.onResponseCallback = onResponseCallback;
+    _apiClient.onErrorCallback = onErrorCallback;
   }
 
   @override
-  Future<MobileApiResponse> createPhoto(PhotoResponse photo) {
-    // TODO: implement createPhoto
-    throw UnimplementedError();
+  Future<MobileApiResponse> createPhoto(PhotoResponse photoResponse) async {
+    try {
+      final response = await _apiClient.postRequest("photo/", photoResponse);
+      if (response.statusCode == 401) {
+        print("UnAuthorized");
+      }
+      return MobileApiResponse.fromJson(response.data);
+    } catch (e) {
+      print('Error creating photo: $e');
+      rethrow;
+    }
   }
 
   @override
-  Future<MobileApiResponse> deleteAdvert(int id) {
-    // TODO: implement deleteAdvert
-    throw UnimplementedError();
+  Future<MobileApiResponse> deletePhoto(int id) async {
+    try {
+      final response = await _apiClient.deleteById("photo/$id");
+      if (response.statusCode == 401) {
+        print("UnAuthorized");
+      }
+      return MobileApiResponse.fromJson(response.data);
+    } catch (e) {
+      print('Error deleting photo: $e');
+      rethrow;
+    }
   }
 
   @override
-  Future<PhotoResponse> getPhoto(int id) {
-    // TODO: implement getPhoto
-    throw UnimplementedError();
+  Future<Photos> getPhotos() async {
+    try {
+      final response = await _apiClient.getRequest("photos/");
+      if (response.statusCode == 401) {
+        print("UnAuthorized");
+      }
+      return Photos.fromJson(response.data);
+    } catch (e) {
+      print('Error fetching photos: $e');
+      rethrow;
+    }
   }
 
   @override
-  Future<Photos> getPhotos() {
-    // TODO: implement getPhotos
-    throw UnimplementedError();
+  void onErrorCallback(MobileApiResponse response) {
+    print("Response Error: ${response.errorMessage}");
   }
 
   @override
-  onErrorCallback(MobileApiResponse response) {
-    // TODO: implement onErrorCallback
-    throw UnimplementedError();
+  void onResponseCallback(MobileApiResponse response) {
+    print("Response Status: ${response.hasError}");
   }
 
   @override
-  onResponseCallback(MobileApiResponse response) {
-    // TODO: implement onResponseCallback
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<UpdatePhotoResponse> updatePhoto(int id) {
-    // TODO: implement updatePhoto
-    throw UnimplementedError();
+  String getUploadUrl(String photoImage) {
+    return _apiClient.getUploadUrl(photoImage);
   }
 }
